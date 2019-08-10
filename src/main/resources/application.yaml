@@ -4,11 +4,11 @@ spring:
   view.suffix: .jsp
  aop:
    auto: true
- datasource:
-    url: jdbc:mysql://sjc-coi01-lnx:3306/ulm?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: password
-    driver-class-name: com.mysql.jdbc.Driver
+# datasource:
+#    url: jdbc:mysql://sjc-coi01-lnx:3306/ulm?useUnicode=true&characterEncoding=utf-8&useSSL=false
+#    username: root
+#    password: password
+#    driver-class-name: com.mysql.jdbc.Driver
  profiles:
    active: local
 

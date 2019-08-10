@@ -1,6 +1,7 @@
 package com.spring.test.datasource;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +15,18 @@ import java.util.logging.Logger;
 @Configuration
 public class DataSourceConfig implements DataSource, ApplicationContextAware {
 
+    @Autowired
+    private ReplaceLoadBean replaceLoadBean;
 
     private ApplicationContext applicationContext;
 
+    private DataSource dataSource ;
+
+    private String dataSourceName = "hsDataSourceName";
+
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        return getDataSource().getConnection();
     }
 
     @Override
@@ -66,4 +73,31 @@ public class DataSourceConfig implements DataSource, ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
+    public void createDataSource(String dataSourceName){
+        if(!replaceLoadBean.containBean(dataSourceName)){
+            DataSourceReplaceBean dataSourceReplaceBean = new DataSourceReplaceBean();
+            dataSourceReplaceBean.setBeanName(dataSourceName);
+            dataSourceReplaceBean.setDriver("com.mysql.jdbc.Driver");
+//            dataSourceReplaceBean.setUrl("jdbc:mysql://sjc-coi01-lnx:3306/ulm?useUnicode=true&characterEncoding=utf-8&useSSL=false");
+            dataSourceReplaceBean.setUrl("jdbc:mysql://sjc-coi01-lnx:3306/ulm");
+            dataSourceReplaceBean.setUserName("root");
+            dataSourceReplaceBean.setPassword("password");
+
+            replaceLoadBean.loadBeanDefinitions(new ReplaceSource(dataSourceReplaceBean));
+        }
+    }
+
+    public DataSource getDataSource(){
+        if(!this.applicationContext.containsBean(dataSourceName)){
+            createDataSource(dataSourceName);
+            return getDataSource(dataSourceName);
+        }
+        return  getDataSource(dataSourceName);
+    }
+
+    public DataSource getDataSource(String dataSourceName){
+        return (DataSource) this.applicationContext.getBean(dataSourceName);
+    }
+
 }

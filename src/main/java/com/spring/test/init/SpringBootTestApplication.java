@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.spring.test.*"})
 @ImportResource("classpath:inject.xml")
-@EnableJpaRepositories(basePackages={"com.spring.test.dao"})
+@EnableJpaRepositories(basePackages={"com.spring.test.*"})
 @EntityScan("com.spring.test.model")
 public class SpringBootTestApplication {
 
