@@ -37,6 +37,13 @@ public class ReplaceLoadBean implements ApplicationContextAware, InitializingBea
     }
 
 
+    public void removeBean(String beanName){
+        if(containBean(beanName)){
+            BeanDefinitionRegistry registry =  (BeanDefinitionRegistry)applicationContext.getBeanFactory();
+            registry.removeBeanDefinition(beanName);
+        }
+    }
+
     // 资源定位、装载、注册
     public void test(){
         ClassPathResource resource = new ClassPathResource("bean.xml");

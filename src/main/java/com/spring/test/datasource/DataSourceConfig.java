@@ -1,5 +1,6 @@
 package com.spring.test.datasource;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -10,6 +11,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 @Configuration
@@ -23,6 +27,9 @@ public class DataSourceConfig implements DataSource, ApplicationContextAware {
     private DataSource dataSource ;
 
     private String dataSourceName = "hsDataSourceName";
+
+    private ThreadPoolExecutor executor =new ThreadPoolExecutor(1,2,5,TimeUnit.SECONDS,
+             new LinkedBlockingDeque<>(), new ThreadFactoryBuilder().setNameFormat("ds-refresh-thread-%d").build());
 
     @Override
     public Connection getConnection() throws SQLException {
@@ -88,13 +95,18 @@ public class DataSourceConfig implements DataSource, ApplicationContextAware {
         }
     }
 
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public DataSource getDataSource(){
         if(!this.applicationContext.containsBean(dataSourceName)){
             createDataSource(dataSourceName);
-            return getDataSource(dataSourceName);
+            setDataSource( getDataSource(dataSourceName));
         }
-        return  getDataSource(dataSourceName);
+        return  dataSource;
     }
+
 
     public DataSource getDataSource(String dataSourceName){
         return (DataSource) this.applicationContext.getBean(dataSourceName);
