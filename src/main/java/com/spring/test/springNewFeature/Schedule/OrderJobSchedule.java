@@ -29,7 +29,8 @@ public class OrderJobSchedule implements SchedulingConfigurer {
                 //2.设置执行周期(Trigger)
                 triggerContext -> {
                     //2.1 从数据库获取执行周期
-                    String cron = "*/5 * * * * ?";
+//                    String cron = "*/5 * * * * ?";
+                    String cron = "0 0 0 10,20,30 * ?";
                     //2.2 合法性校验.
                     if (StringUtils.isEmpty(cron)) {
                         // Omitted Code ..

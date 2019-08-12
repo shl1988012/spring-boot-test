@@ -14,7 +14,7 @@ public class TestLogController {
 
     @RequestMapping(path = "/testOffDebug", produces = {"application/json"}, method = {RequestMethod.GET})
     public void testLog() {
-
+        System.out.println("user.dir = "+System.getProperty("user.dir"));
         if (log.isDebugEnabled()) {
             log.debug("this is debug log");
         }

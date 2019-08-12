@@ -4,17 +4,19 @@ spring:
   view.suffix: .jsp
  aop:
    auto: true
-# datasource:
-#    url: jdbc:mysql://sjc-coi01-lnx:3306/ulm?useUnicode=true&characterEncoding=utf-8&useSSL=false
-#    username: root
-#    password: password
-#    driver-class-name: com.mysql.jdbc.Driver
  profiles:
    active: local
 
 spring.application.name: spring-boot-test
 spring.sleuth.web.skipPattern: "/ok"
 spring.mvc.async.request-timeout: "90000"
+
+server:
+  port: 9443
+  ssl:
+   enabled: true
+   key-store: local.keystore
+   key-store-password: local.keystore
 
 msg.sender: weixin
 
@@ -24,6 +26,6 @@ enable.local.debug: true
 consul:
   datacenter: alln-stg
 server:
-  port: 9000
+  port: 9443
   ssl:
    enabled: false
