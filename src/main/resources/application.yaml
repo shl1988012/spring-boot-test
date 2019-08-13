@@ -26,6 +26,6 @@ enable.local.debug: true
 consul:
   datacenter: alln-stg
 server:
-  port: 9443
+  port: 9000
   ssl:
    enabled: false

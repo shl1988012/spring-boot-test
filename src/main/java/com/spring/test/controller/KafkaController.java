@@ -57,13 +57,12 @@ public class KafkaController {
     @RequestMapping(path = "/sendToDefaultTemplate", produces = {"application/json"}, method = {RequestMethod.GET})
     public void sendToDefaultTemplate() throws Exception {
 
-//        kafkaTemplate.sendDefault("I`m sending msg to default topic");
         //发送带有时间戳的消息
         kafkaTemplate.send("topic.hengshi.test", 4, System.currentTimeMillis(), 0,"send message with timestamp");
 
         //使用ProducerRecord发送消息
         ProducerRecord record = new ProducerRecord("topic.hengshi.test", "use ProducerRecord to send message");
-        kafkaTemplate.send(record);
+        kafkaTemplate.send(record).addCallback(new DemoProduceCallback());
 
         //使用message发送消息
         Map map = new HashMap();
