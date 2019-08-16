@@ -1,6 +1,8 @@
 package com.spring.test.kafka.config;
 
 
+import com.spring.test.kafka.Serializer.ObjectDeserializer;
+import com.spring.test.kafka.Serializer.ObjectSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -55,7 +57,6 @@ public class KafkaConfiguration {
     }
 
 
-
     //根据senderProps填写的参数创建生产者工厂
     @Bean
     public ProducerFactory<Integer, String> producerFactory() {
@@ -91,9 +92,9 @@ public class KafkaConfiguration {
         //Session超时设置
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
 
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ObjectDeserializer.class);
 
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ObjectDeserializer.class);
 
         return props;
     }
@@ -104,7 +105,7 @@ public class KafkaConfiguration {
         //连接地址
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://sjc-coi01-lnx:9092");
         //重试，0为不启用重试机制
-        props.put(ProducerConfig.RETRIES_CONFIG, 1);
+        props.put(ProducerConfig.RETRIES_CONFIG, 5);
         //控制批处理大小，单位为字节
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
         //批量发送，延迟为1毫秒，启用该功能能有效减少生产者发送消息次数，从而提高并发量
@@ -113,17 +114,11 @@ public class KafkaConfiguration {
         props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 1024000);
 
         //键的序列化方式
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, ObjectSerializer.class);
         //值的序列化方式
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ObjectSerializer.class);
         return props;
     }
-
-
-
-
-
-
 
 
 

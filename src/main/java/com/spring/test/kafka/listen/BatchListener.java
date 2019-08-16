@@ -52,18 +52,12 @@ public class BatchListener {
         return container;
     }
 
-    @Bean
-    public NewTopic batchTopic(){
-        return new NewTopic("topic.hengshi.batch", 8, (short)1);
-    }
-
-
-    @KafkaListener(id="batch", topics ={"topic.hengshi.batch"}, clientIdPrefix="batch", containerFactory="batchContainerFactory")
-    public void batchListener(List<String> data){
-
-        log.info("topic.hengshi.batch receive...");
-        data.stream().forEach(s -> System.out.println(s));
-
-    }
+//    @KafkaListener(id="batch", topics ={"topic.hengshi.batch"}, clientIdPrefix="batch", containerFactory="batchContainerFactory")
+//    public void batchListener(List<String> data){
+//
+//        log.info("topic.hengshi.batch receive...");
+//        data.stream().forEach(s -> System.out.println(s));
+//
+//    }
 
 }

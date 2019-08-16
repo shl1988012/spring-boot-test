@@ -2,20 +2,28 @@ package com.spring.test.controller;
 
 
 import com.spring.test.kafka.config.KafkaSendResultHandler;
+import com.spring.test.kafka.message.QueueMessageProducer;
+import com.spring.test.model.message.QueueMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +41,9 @@ public class KafkaController {
 
     @Autowired
     private KafkaSendResultHandler resultHandler;
+
+    @Autowired
+    private QueueMessageProducer queueMessageProducer;
 
 
     @RequestMapping(path = "/testKafkaDemo", produces = {"application/json"}, method = {RequestMethod.GET})
@@ -57,21 +68,25 @@ public class KafkaController {
     @RequestMapping(path = "/sendToDefaultTemplate", produces = {"application/json"}, method = {RequestMethod.GET})
     public void sendToDefaultTemplate() throws Exception {
 
-        //发送带有时间戳的消息
-        kafkaTemplate.send("topic.hengshi.test", 4, System.currentTimeMillis(), 0,"send message with timestamp");
-
         //使用ProducerRecord发送消息
-        ProducerRecord record = new ProducerRecord("topic.hengshi.test", "use ProducerRecord to send message");
-        kafkaTemplate.send(record).addCallback(new DemoProduceCallback());
+//        ProducerRecord record = new ProducerRecord("topic.hengshi.test", "use ProducerRecord to send message");
+//        kafkaTemplate.send(record).addCallback(new DemoProduceCallback());
 
         //使用message发送消息
-        Map map = new HashMap();
-        map.put(KafkaHeaders.TOPIC, "topic.hengshi.test");
-        map.put(KafkaHeaders.PARTITION_ID, 3);
-        map.put(KafkaHeaders.MESSAGE_KEY, 0);
-        GenericMessage message = new GenericMessage("use Message to send message",new MessageHeaders(map));
-        kafkaTemplate.send(message);
+//        Map map = new HashMap();
+//        map.put(KafkaHeaders.TOPIC, "topic.hengshi.test");
+//        map.put(KafkaHeaders.PARTITION_ID, 3);
+//        map.put(KafkaHeaders.MESSAGE_KEY, 0);
+//        GenericMessage message = new GenericMessage("use Message to send message",new MessageHeaders(map));
+//        kafkaTemplate.send(message);
 
+        QueueMessage<String> message = new QueueMessage<>();
+
+        message.setRetryTimes(0);
+        message.setId("111");
+        message.setMessage("aaaaaaaaaaaaaa");
+        message.setTimeStamp(Instant.now().getEpochSecond());
+        queueMessageProducer.sendMessage("topic.hengshi.test", message);
     }
 
     @RequestMapping(path = "/testProducerListen", produces = {"application/json"}, method = {RequestMethod.GET})
@@ -79,10 +94,8 @@ public class KafkaController {
 
         kafkaTemplate.setProducerListener(resultHandler);
         kafkaTemplate.send("topic.hengshi.test", 4, System.currentTimeMillis(), 0,"send message with timestamp");
-        Thread.sleep(1000);
 
     }
-
 
 
 }

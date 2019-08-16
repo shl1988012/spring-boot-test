@@ -2,8 +2,10 @@ package com.spring.test.model.message;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class QueueMessage<T> {
+public class QueueMessage<T> implements Serializable {
 
     private String id;
 

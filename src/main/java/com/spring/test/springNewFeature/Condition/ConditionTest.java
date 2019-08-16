@@ -5,8 +5,12 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 @Component
-@Conditional(msgSenderConditionQQ.class)
+@Conditional(msgSenderConditionWECHAT.class)
 public class ConditionTest {
 
+
+    public void test(){
+        System.out.println("========123456789===========");
+    }
 
 }

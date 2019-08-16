@@ -45,7 +45,6 @@ public class DataSourceReplaceBean {
                 .append("  </bean>");
         sb.append("</beans>");
 
-        System.out.println(sb.toString());
         return sb.toString();
     }
 

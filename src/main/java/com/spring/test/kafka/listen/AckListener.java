@@ -1,11 +1,13 @@
 package com.spring.test.kafka.listen;
 
+import com.spring.test.kafka.Serializer.ObjectDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Configuration
 @Slf4j
 public class AckListener {
 
@@ -34,9 +36,9 @@ public class AckListener {
         //一次拉取消息数量
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5");
 
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ObjectDeserializer.class);
 
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ObjectDeserializer.class);
 
         return props;
     }
@@ -53,10 +55,10 @@ public class AckListener {
         return factory;
     }
 
-    @KafkaListener(id = "ack", topics = "topic.quick.ack",containerFactory = "ackContainerFactory")
-    public void ackListener(ConsumerRecord record, Acknowledgment ack) {
-        log.info("topic.quick.ack receive : " + record.value());
-        ack.acknowledge();
-    }
+//    @KafkaListener(id = "ack", topics = "topic.quick.ack",containerFactory = "ackContainerFactory")
+//    public void ackListener(ConsumerRecord record, Acknowledgment ack) {
+//        log.info("topic.quick.ack receive : " + record.value());
+//        ack.acknowledge();
+//    }
 
 }

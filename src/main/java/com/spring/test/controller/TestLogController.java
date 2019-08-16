@@ -25,14 +25,4 @@ public class TestLogController {
     }
 
 
-    public static void main(String[] args) {
-
-//        String scimType ="user_already_exists_in_cpr";
-//        EnrollmentError error = EnrollmentError.getEnrollmentErrorByMsg(scimType);
-//        System.out.println(error);
-        String str = "a:b";
-        String[] strSplit = str.split(":");
-        System.out.println(strSplit[1]);
-    }
-
 }

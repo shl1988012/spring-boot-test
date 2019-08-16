@@ -29,11 +29,16 @@ public class KafkaInitialConfiguration {
     }
 
     //创建TopicName为topic.hengshi.test的Topic并设置分区数为5以及副本数为1
+    //副本数和pod 一致
     @Bean
     public NewTopic initialTopic(){
         return new NewTopic("topic.hengshi.test", 5, NumberUtils.toShort("1"));
     }
 
+//    @Bean
+//    public NewTopic batchTopic(){
+//        return new NewTopic("topic.hengshi.batch", 8, (short)1);
+//    }
 
 
 
