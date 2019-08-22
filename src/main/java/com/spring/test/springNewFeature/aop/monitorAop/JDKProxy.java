@@ -14,8 +14,8 @@ public class JDKProxy implements InvocationHandler {
     }
 
     /**
-     *
-     * @param proxy
+     *调用被代理类(目标对象)的任意方法都会触发invoke方法
+     * @param proxy  代理类
      * @param method
      * @param args
      * @return
