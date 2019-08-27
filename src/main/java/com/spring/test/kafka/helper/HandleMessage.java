@@ -1,25 +1,28 @@
 package com.spring.test.kafka.helper;
 
 import com.spring.test.kafka.helper.KafkaInstance.KafkaInstance;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.TopicPartition;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
-
-import java.util.Arrays;
-import java.util.List;
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 public class HandleMessage {
 
 
-    public void handleMessage(FetchMessage message, boolean commit){
+    public Pair<Set<Object>, List<String>> handleMessage(FetchMessage message, boolean commit){
 
         KafkaInstance kafkaInstance = KafkaInstance.getInstance();
         KafkaConsumer consumer = kafkaInstance.createConsumer();
@@ -30,15 +33,16 @@ public class HandleMessage {
         }
 
         CountDownLatch countDownLatch = new CountDownLatch(partitions.size());
+
+        Set<Object> objectSet = Collections.synchronizedSet(new HashSet<>());
+        List<String> keyList = Collections.synchronizedList(new ArrayList<>());
         Flux.fromIterable(partitions)
                 .parallel(partitions.size())     //将任务分发到5个不同的线程进行处理
                 .runOn(Schedulers.parallel())  // 将订阅者进行分轨
                 .subscribe(partitionInfo -> {
                     //获取每个partition里面的message
-
-
+                    searchMessageFromPartition(message, partitionInfo, commit, objectSet, keyList);
                     countDownLatch.countDown();
-
                 });  //消费
         try{
             countDownLatch.await();
@@ -46,6 +50,9 @@ public class HandleMessage {
             e.printStackTrace();
         }
         consumer.close();
+        Pair<Set<Object>, List<String>> pair = Pair.of(objectSet, keyList);
+        //后续解析pair 即可
+        return pair;
     }
 
     //config ConsumerConfig.MAX_POLL_RECORDS_CONFIG = 100
@@ -61,7 +68,7 @@ public class HandleMessage {
     });
 
 
-    private void searchMessageFromPartition(FetchMessage message, PartitionInfo partitionInfo, boolean commit){
+    private void searchMessageFromPartition(FetchMessage message, PartitionInfo partitionInfo, boolean commit, Set<Object> objectSet, List<String> keyList){
         //get the length of the topic in one partition
         TopicPartition topicPartition = new TopicPartition(message.getTopic(), partitionInfo.partition());
         KafkaConsumer consumer = KafkaInstance.getInstance().createConsumer();
@@ -79,15 +86,54 @@ public class HandleMessage {
 
         for(int i = 0 ; i < readCounts; i++){
 
-            threadPool.execute(() -> );
-
-
+            threadPool.execute(() -> {
+                try {
+                    KafkaConsumer consumer1 = KafkaInstance.getInstance().createConsumer();
+                    consumer1.assign(Arrays.asList(topicPartition));
+                    consumer1.seekToEnd(Arrays.asList(topicPartition));
+                    ConsumerRecords records;
+                    if (StringUtils.isNotBlank(getEnv("kafkaPoll"))) {
+                        records = consumer1.poll(Duration.ofSeconds(Integer.valueOf(getEnv("kafkaPoll"))));
+                    } else {
+                        records = consumer1.poll(Duration.ofSeconds(5));
+                    }
+                    for (Object record : records) {
+                        ConsumerRecord consumerRecord = (ConsumerRecord) record;
+                        if (StringUtils.isNotBlank(message.getMessageId()) && StringUtils.equalsIgnoreCase(message.getMessageId(), String.valueOf(consumerRecord.key()))) {
+                            objectSet.add(consumerRecord);
+                            keyList.add(consumerRecord.key().toString());
+                        }
+                    }
+                    if(commit){
+                        for(Object o : objectSet){
+                            ConsumerRecord consumerRecord =(ConsumerRecord)o;
+                            consumer.commitSync(Collections.singletonMap(new TopicPartition(message.getTopic(), consumerRecord.partition()), new OffsetAndMetadata(consumerRecord.offset() + 1)));
+                        }
+                    }
+                }finally {
+                    countDownLatch.countDown();
+                }
+            });
         }
 
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
 
 
+
+    private String getEnv(String key ){
+        if(StringUtils.isNotBlank(System.getenv(key))){
+            return System.getenv(key);
+        }else if(StringUtils.isNotBlank(System.getProperty(key))){
+            return System.getProperty(key);
+        }
+        return "";
+    }
 
 }
