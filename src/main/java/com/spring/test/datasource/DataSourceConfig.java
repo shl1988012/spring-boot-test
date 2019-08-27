@@ -86,8 +86,8 @@ public class DataSourceConfig implements DataSource, ApplicationContextAware {
             DataSourceReplaceBean dataSourceReplaceBean = new DataSourceReplaceBean();
             dataSourceReplaceBean.setBeanName(dataSourceName);
             dataSourceReplaceBean.setDriver("com.mysql.jdbc.Driver");
-//            dataSourceReplaceBean.setUrl("jdbc:mysql://sjc-coi01-lnx:3306/ulm?useUnicode=true&characterEncoding=utf-8&useSSL=false");
-            dataSourceReplaceBean.setUrl("jdbc:mysql://sjc-coi01-lnx:3306/ulm");
+            dataSourceReplaceBean.setUrl("jdbc:mysql://sjc-coi01-lnx:3306/ulm?useSSL=false");
+//            dataSourceReplaceBean.setUrl("jdbc:mysql://sjc-coi01-lnx:3306/ulm");
             dataSourceReplaceBean.setUserName("root");
             dataSourceReplaceBean.setPassword("password");
 

@@ -14,4 +14,8 @@ public class QueueMessage<T> implements Serializable {
     private long timeStamp;
 
     private T message;
+
+    private String topic;
+
+    private String messageId;
 }

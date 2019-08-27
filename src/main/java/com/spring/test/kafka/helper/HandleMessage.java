@@ -1,6 +1,7 @@
 package com.spring.test.kafka.helper;
 
 import com.spring.test.kafka.helper.KafkaInstance.KafkaInstance;
+import com.spring.test.model.message.QueueMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HandleMessage {
 
 
-    public Pair<Set<Object>, List<String>> handleMessage(FetchMessage message, boolean commit){
+    public Pair<Set<Object>, List<String>> handleMessage(QueueMessage message, boolean commit){
 
         KafkaInstance kafkaInstance = KafkaInstance.getInstance();
         KafkaConsumer consumer = kafkaInstance.createConsumer();
@@ -68,7 +69,7 @@ public class HandleMessage {
     });
 
 
-    private void searchMessageFromPartition(FetchMessage message, PartitionInfo partitionInfo, boolean commit, Set<Object> objectSet, List<String> keyList){
+    private void searchMessageFromPartition(QueueMessage message, PartitionInfo partitionInfo, boolean commit, Set<Object> objectSet, List<String> keyList){
         //get the length of the topic in one partition
         TopicPartition topicPartition = new TopicPartition(message.getTopic(), partitionInfo.partition());
         KafkaConsumer consumer = KafkaInstance.getInstance().createConsumer();
@@ -125,7 +126,9 @@ public class HandleMessage {
     }
 
 
-
+    public void testGroup(){
+        KafkaConsumer consumer = KafkaInstance.getInstance().createConsumer();
+    }
 
     private String getEnv(String key ){
         if(StringUtils.isNotBlank(System.getenv(key))){

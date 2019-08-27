@@ -1,6 +1,7 @@
 package com.spring.test.Sync.Interview;
 
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Test6 {
 
@@ -23,7 +24,6 @@ public class Test6 {
     }
 
     public static void test(){
-
 
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> 7/0).exceptionally(e ->{
            e.printStackTrace();

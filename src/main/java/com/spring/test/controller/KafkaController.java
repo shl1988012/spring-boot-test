@@ -2,12 +2,15 @@ package com.spring.test.controller;
 
 
 import com.spring.test.kafka.config.KafkaSendResultHandler;
+import com.spring.test.kafka.helper.HandleMessage;
 import com.spring.test.kafka.message.QueueMessageProducer;
 import com.spring.test.model.message.QueueMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class KafkaController {
@@ -86,6 +87,8 @@ public class KafkaController {
         message.setId("111");
         message.setMessage("aaaaaaaaaaaaaa");
         message.setTimeStamp(Instant.now().getEpochSecond());
+        message.setTopic("topic.hengshi.test");
+        message.setMessageId("111");
         queueMessageProducer.sendMessage("topic.hengshi.test", message);
     }
 
@@ -97,5 +100,26 @@ public class KafkaController {
 
     }
 
+    @RequestMapping(path = "/handleMessage", produces = {"application/json"}, method = {RequestMethod.GET})
+    public void handleMessage(){
+
+        QueueMessage message = new QueueMessage();
+        message.setTopic("topic.hengshi.test-deadQueue");
+        message.setMessageId("111");
+
+        HandleMessage handleMessage = new HandleMessage();
+        Pair<Set<Object>, List<String>>pair = handleMessage.handleMessage(message, false);
+        Set<Object> set = pair.getLeft();
+        System.out.printf("the total of messages is: [%d] \n", set.size());
+        set.forEach(object -> {
+            ConsumerRecord consumerRecord = (ConsumerRecord) object;
+            System.out.printf("Message[ topic = %s, partition = %s, offset =%d, messageId = %s, messageContext = %s ]\n",
+                    consumerRecord.topic(), consumerRecord.partition(),
+                    consumerRecord.offset(), consumerRecord.key(), consumerRecord.value());
+
+        });
+
+
+    }
 
 }
