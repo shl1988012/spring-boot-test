@@ -6,7 +6,10 @@ import com.spring.test.kafka.Serializer.ObjectSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -22,6 +25,7 @@ import org.springframework.kafka.listener.MessageListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Configuration
 @Slf4j
@@ -62,6 +66,7 @@ public class KafkaConfiguration {
     public ProducerFactory<Integer, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(senderProps());
     }
+
 
     //kafkaTemplate实现了Kafka发送接收等功能
     @Bean
@@ -120,6 +125,18 @@ public class KafkaConfiguration {
         return props;
     }
 
+//    @Bean
+//    public Producer<String,String> build(){
+//        Producer<String,String> producer = new KafkaProducer<String, String>(senderProps());
+//        try {
+//            producer.send(new ProducerRecord<String,String>("aaa", "123")).get();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//        return producer;
+//    }
 
 
 
