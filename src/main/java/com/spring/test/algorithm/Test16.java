@@ -5,15 +5,20 @@ public class Test16 {
 
 
     public static ListNode reverseList(ListNode head){
-        ListNode reverseNode =null;
+        ListNode reservedHead  =null;
         ListNode pNode = head;
-        ListNode pPrev = null;
-        while(pNode != null){
-
-
-
+        ListNode pPre = null;
+        ListNode pNext = null;
+        while(pNode !=null){
+            pNext = pNode.getNext();
+            if(pNext == null){
+                reservedHead = pNode;
+            }
+            pNode.setNext(pPre);
+            pPre = pNode;
+            pNode = pNext;
         }
-        return null;
+        return reservedHead;
     }
 
 
@@ -38,6 +43,4 @@ public class Test16 {
         }
 
     }
-
-
 }
