@@ -26,7 +26,7 @@ public class AckListener {
     //消费者配置
     public static Map<String, Object> consumerProps(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://sjc-coi01-lnx:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://172.31.129.156:9092");
         //是否自动提交
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         //自动提交的频率

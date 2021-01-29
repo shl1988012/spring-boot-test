@@ -12,6 +12,10 @@ import java.lang.reflect.Method;
 @Aspect
 public class MyAspect {
 
+    @Pointcut("execution(* com.spring.test.springNewFeature.UserDao.addUser(..))")
+    private void myPointCut(){
+
+    }
     /**
      * 前置通知
      */
@@ -62,8 +66,5 @@ public class MyAspect {
     }
 
 
-    @Pointcut("execution(* com.spring.test.springNewFeature.UserDao.addUser(..))")
-    private void myPointCut(){
 
-    }
 }

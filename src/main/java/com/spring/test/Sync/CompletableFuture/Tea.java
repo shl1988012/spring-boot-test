@@ -39,9 +39,6 @@ public class Tea {
     }
 
     public static void main(String[] args) {
-//        tea();
-        int i =5 ;
-        int size = (int) Math.ceil((float) (i) / 10);
-        System.out.println(size);
+        tea();
     }
 }

@@ -18,7 +18,7 @@ public class KafkaInitialConfiguration {
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>(4);
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "http://sjc-coi01-lnx:9092");
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "http://172.31.129.156:9092");
         return new KafkaAdmin(configs);
     }
 

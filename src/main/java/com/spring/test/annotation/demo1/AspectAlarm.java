@@ -20,10 +20,10 @@ public class AspectAlarm {
 
     }
 
-    @Before("alarmService() && atExecution()")
-    public void inspect(){
-        System.out.println("aaaaaaaaaaa");
-    }
+//    @Before("alarmService() && atExecution()")
+//    public void inspect(){
+//        System.out.println("aaaaaaaaaaa");
+//    }
 
 
     @Around("alarmService(alarm) && atExecution()")

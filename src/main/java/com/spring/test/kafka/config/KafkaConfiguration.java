@@ -87,7 +87,7 @@ public class KafkaConfiguration {
     //消费者配置
     private Map<String, Object> consumerProps(){
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://sjc-coi01-lnx:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://172.31.129.156:9092");
         //GroupID
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "bootKafka");
         //是否自动提交
@@ -108,7 +108,7 @@ public class KafkaConfiguration {
     private Map<String, Object> senderProps (){
         Map<String, Object> props = new HashMap<>();
         //连接地址
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://sjc-coi01-lnx:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://172.31.129.156:9092");
         //重试，0为不启用重试机制
         props.put(ProducerConfig.RETRIES_CONFIG, 5);
         //控制批处理大小，单位为字节
