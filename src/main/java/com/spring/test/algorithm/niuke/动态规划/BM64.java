@@ -11,6 +11,10 @@ package com.spring.test.algorithm.niuke.动态规划;
  */
 public class BM64 {
 
+    public int minCostClimbingStairs (int[] cost) {
+        // write code here
 
+
+    }
 
 }
