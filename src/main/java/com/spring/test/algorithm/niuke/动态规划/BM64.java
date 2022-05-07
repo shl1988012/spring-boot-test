@@ -14,7 +14,7 @@ public class BM64 {
     public int minCostClimbingStairs (int[] cost) {
         // write code here
 
-
+        return -1;
     }
 
 }
